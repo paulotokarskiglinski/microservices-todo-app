@@ -1,9 +1,12 @@
 # microservices-todo-app
+
 Aplicação baseada na arquitetura de microserviços em .NET, MongoDB, RabbitMQ, SignalR, Ocelot e Angular
 
 ## Sobre
 
 A aplicação permite manter o controle de tarefas, tipos de tarefas, usuários e monitorar logs
+
+![Screenshot](screenshot.png)
 
 ## Microserviços
 
