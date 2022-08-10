@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>dotnet_todo_signalr</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'dotnet_todo_api' " />
+  <ItemGroup>
+    <None Remove="Models\" />
+    <None Remove="MongoDB.Driver" />
+    <None Remove="RabbitMQ.Client" />
+    <None Remove="Microsoft.AspNetCore.SignalR.Common" />
+    <None Remove="Hub\" />
+    <None Remove="Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="HubConfig\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.17.1" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="6.0.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Dockerfile.config" />
+  </ItemGroup>
+</Project>

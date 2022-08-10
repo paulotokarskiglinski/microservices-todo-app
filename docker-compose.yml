@@ -1,0 +1,72 @@
+version: "3.9"
+services:
+  mongodb-1:
+    image: mongo
+    container_name: mongodb-1
+  mongodb-2:
+    image: mongo
+    container_name: mongodb-2
+  mongodb-3:
+    image: mongo
+    container_name: mongodb-3
+  rabbitmq:
+    image: rabbitmq
+    hostname: rabbit-1
+    container_name: rabbit-1
+    ports:
+      - 5672:5672
+      - 15672:15672
+  angular-todo-app:
+    build: ./angular-todo-app
+    container_name: angular-todo-app
+    ports:
+      - 8080:80
+  dotnet-todo-signalr:
+    build: ./dotnet-todo-signalr
+    hostname: dotnet-todo-signalr
+    container_name: dotnet-todo-signalr
+    ports:
+      - 7267:80
+    depends_on:
+      - rabbitmq
+  dotnet-todo-api:
+    build: ./dotnet-todo-api
+    hostname: dotnet-todo-api
+    container_name: dotnet-todo-api
+    ports:
+      - 7264:80
+    depends_on:
+      - mongodb-1
+      - rabbitmq
+  dotnet-tipotarefa-api:
+    build: ./dotnet-tipotarefa-api
+    hostname: dotnet-tipotarefa-api
+    container_name: dotnet-tipotarefa-api
+    ports:
+      - 7265:80
+    depends_on:
+      - rabbitmq
+      - mongodb-2
+  dotnet-usuario-api:
+    build: ./dotnet-usuario-api
+    hostname: dotnet-usuario-api
+    container_name: dotnet-usuario-api
+    ports:
+      - 7266:80
+    depends_on:
+      - rabbitmq
+      - mongodb-3
+  dotnet-gateway-ocelot:
+    build: ./dotnet-gateway-ocelot
+    hostname: dotnet-gateway-ocelot
+    container_name: dotnet-gateway-ocelot
+    ports:
+      - 7081:80
+    links:
+      - dotnet-todo-api
+      - dotnet-usuario-api
+      - dotnet-tipotarefa-api
+    depends_on:
+      - dotnet-todo-api
+      - dotnet-usuario-api
+      - dotnet-tipotarefa-api

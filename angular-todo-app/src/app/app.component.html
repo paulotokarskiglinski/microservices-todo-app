@@ -1,0 +1,190 @@
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="#">
+      <strong>Microservices TODO App</strong>
+    </a>
+  </div>
+
+  <div class="navbar-end">
+    <div class="navbar-item">
+      <div class="buttons">
+        <a class="button is-small is-dark" href="https://github.com/paulotokarskiglinski/" target="_blank" title="Abrir repositório no GitHub">
+          <span class="icon is-small">
+            <i class="fa-brands fa-github"></i>
+          </span>
+          <strong>GitHub</strong>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div fxLayout="row" fxLayoutGap="20px">
+    <div fxFlex="25" fxLayout="column">
+      <h2 class="subtitle">Tarefas</h2>
+
+      <form fxLayout="column" fxLayoutGap="5px" [formGroup]="tarefaForm" (ngSubmit)="cadastrarTarefa()">
+        <input fxFlex type="text" class="input" formControlName="descricao" placeholder="Descrição">
+        <div class="select">
+          <select fxFlex name="idtipotarefa" formControlName="idtipotarefa">
+            <option value="" disabled selected>Selecione o tipo da tarefa</option>
+            <option *ngFor="let item of selectTipoTarefa | async" [value]="item.id">
+              {{item.descricao}}
+            </option>
+          </select>
+        </div>
+        <div class="select">
+          <select fxFlex name="idusuario" formControlName="idusuario">
+            <option value="" disabled selected>Selecione o usuário responsável</option>
+            <option *ngFor="let item of selectUsuario | async" [value]="item.id">
+              {{item.nome + ' — ' + item.nomeUsuario}}
+            </option>
+          </select>
+        </div>
+        <input type="date" class="input" formControlName="datatarefa" placeholder="Data da Tarefa">
+        <div fxFlex>
+          <input type="checkbox" formControlName="feito" id="feito">
+          <label class="checkbox" for="feito">Feito?</label>
+        </div>
+        
+        <br>
+
+        <button type="submit" class="button is-primary">Cadastrar</button>
+      </form>
+    </div>
+
+    <div fxFlex="25" fxLayout="column">
+      <h2 class="subtitle">Tipos de Tarefas</h2>
+
+      <form fxLayout="column" fxLayoutGap="5px" [formGroup]="tipoTarefaForm" (ngSubmit)="cadastrarTipoTarefa()">
+        <input fxFlex type="text" class="input" formControlName="descricao" placeholder="Descrição">
+
+        <br>
+
+        <button type="submit" class="button is-primary">Cadastrar</button>
+      </form>
+    </div>
+
+    <div fxFlex="25" fxLayout="column">
+      <h2 class="subtitle">Usuários</h2>
+
+      <form fxLayout="column" fxLayoutGap="5px" [formGroup]="usuarioForm" (ngSubmit)="cadastrarUsuario()">
+        <input fxFlex type="text" class="input" formControlName="nome" placeholder="Nome completo">
+        <input fxFlex type="text" class="input" formControlName="nomeUsuario" placeholder="Nome de usuário">
+        <input fxFlex type="password" class="input" formControlName="senha" placeholder="Senha">
+        <input fxFlex type="text" class="input" formControlName="email" placeholder="Email">
+        
+        <br>
+
+        <button type="submit" class="button is-primary">Cadastrar</button>
+      </form>
+    </div>
+
+    <div fxFlex="25" fxLayout="column">
+      <h2 class="subtitle">Logs</h2>
+      <div class="tags has-addons">
+        <span class="tag is-light">Status</span>
+        <span class="tag is-success" *ngIf="signalrStatus">Conectado</span>
+        <span class="tag is-danger" *ngIf="!signalrStatus">Desconectado</span>
+      </div>
+    </div>
+  </div>
+
+  <br><br>
+
+  <div fxLayout="row" fxLayoutGap="20px">
+    <div fxFlex="25" class="content is-small">
+      <div *ngFor="let tarefa of tarefas | async; index as i" class="item">
+        <p>
+          <span [ngClass]="'tag ' + (tarefa.feito ? 'is-success' : 'is-warning')">
+            {{tarefa.feito ? 'Concluído' : 'Não concluído'}}
+          </span>
+          <span style="margin-left: 10px">
+            <b>{{i + 1}} — {{tarefa.descricao}}</b>
+          </span>
+        </p>
+        <p>{{tarefa.usuario?.nome}}</p>
+        <p>{{tarefa.tipoTarefa?.descricao}}</p>
+        <p>{{tarefa.dataTarefa | date:'dd/MM/yyyy'}}</p>
+        <br>
+        <div class="buttons">
+          <button type="button" class="button is-info is-small is-light"
+            (click)="mudarStatusTarefa(tarefa)" *ngIf="tarefa.feito">
+            <span class="icon is-small">
+              <i class="fas fa-arrow-rotate-left"></i>
+            </span>
+            <span>Desfazer</span>
+          </button>
+          <button type="button" class="button is-primary is-small is-light"
+            (click)="mudarStatusTarefa(tarefa)" *ngIf="!tarefa.feito">
+            <span class="icon is-small">
+              <i class="fas fa-check"></i>
+            </span>
+            <span>Concluir</span>
+          </button>
+          <button type="button" class="button is-danger is-small is-light"
+            (click)="excluirTarefa(tarefa.id)">
+            <span class="icon is-small">
+              <i class="fas fa-xmark"></i>
+            </span>
+            <span>Excluir</span>
+          </button>
+        </div>
+        <hr>
+      </div>
+    </div>
+
+    <div fxFlex="25" class="content is-small">
+      <div *ngFor="let tipoTarefa of tipoTarefas | async; index as i" class="item">
+        <p>
+          <b>{{i + 1}} — {{tipoTarefa.descricao}}</b>
+        </p>
+        <p>{{tipoTarefa.id}}</p>
+        <br>
+        <button type="button" class="button is-danger is-small is-light"
+          (click)="excluirTipoTarefa(tipoTarefa.id)">
+          <span class="icon is-small">
+            <i class="fas fa-xmark"></i>
+          </span>
+          <span>Excluir</span>
+        </button>
+        <hr>
+      </div>
+    </div>
+
+    <div fxFlex="25" class="content is-small">
+      <div *ngFor="let usuario of usuarios | async; index as i" class="item">
+        <p>
+          <b>{{i + 1}} — {{usuario.nome}}</b>
+        </p>
+        <p>{{usuario.id}}</p>
+        <p>
+          <b>Usuário: </b>{{usuario.nomeUsuario}}
+        </p>
+        <p>
+          <b>Email: </b>{{usuario.email}}
+        </p>
+        <br>
+        <button type="button" class="button is-danger is-small is-light"
+          (click)="excluirUsuario(usuario.id)">
+          <span class="icon is-small">
+            <i class="fas fa-xmark"></i>
+          </span>
+          <span>Excluir</span>
+        </button>
+        <hr>
+      </div>
+    </div>
+
+    <div fxFlex="25" class="content is-small">
+      <div *ngFor="let log of logs; index as i" class="item">
+        <p>
+          {{log?.data | date:'dd/MM/yyyy hh:MM:ss'}} >>> {{log?.metodo}} >>> {{log?.info}}
+        </p>
+        <hr>
+      </div>
+    </div>
+  </div>
+</main>

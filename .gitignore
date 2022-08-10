@@ -1,0 +1,14 @@
+dist
+tmp
+out-tsc
+bazel-out
+
+node_modules
+npm-debug.log
+
+*.vs
+*.vscode
+*.angular
+
+bin/
+obj/
