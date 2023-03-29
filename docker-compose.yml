@@ -3,16 +3,36 @@ services:
   mongodb-1:
     image: mongo
     container_name: mongodb-1
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
   mongodb-2:
     image: mongo
     container_name: mongodb-2
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
   mongodb-3:
     image: mongo
     container_name: mongodb-3
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
   rabbitmq:
     image: rabbitmq
     hostname: rabbit-1
     container_name: rabbit-1
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
     ports:
       - 5672:5672
       - 15672:15672
@@ -28,7 +48,8 @@ services:
     ports:
       - 7267:80
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
   dotnet-todo-api:
     build: ./dotnet-todo-api
     hostname: dotnet-todo-api
@@ -36,8 +57,10 @@ services:
     ports:
       - 7264:80
     depends_on:
-      - mongodb-1
-      - rabbitmq
+      mongodb-1:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
   dotnet-tipotarefa-api:
     build: ./dotnet-tipotarefa-api
     hostname: dotnet-tipotarefa-api
@@ -45,8 +68,10 @@ services:
     ports:
       - 7265:80
     depends_on:
-      - rabbitmq
-      - mongodb-2
+      mongodb-2:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
   dotnet-usuario-api:
     build: ./dotnet-usuario-api
     hostname: dotnet-usuario-api
@@ -54,8 +79,10 @@ services:
     ports:
       - 7266:80
     depends_on:
-      - rabbitmq
-      - mongodb-3
+      mongodb-3:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
   dotnet-gateway-ocelot:
     build: ./dotnet-gateway-ocelot
     hostname: dotnet-gateway-ocelot
