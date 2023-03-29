@@ -1,34 +1,35 @@
 # microservices-todo-app
 
-Aplicação baseada na arquitetura de microserviços em .NET, MongoDB, RabbitMQ, SignalR, Ocelot e Angular
+Application based on microservices architecture with Angular, .NET, MongoDB, RabbitMQ, SignalR and Ocelot.
 
-## Sobre
+## About
 
-A aplicação permite manter o controle de tarefas, tipos de tarefas, usuários e monitorar logs
+The application demonstrates the microservices architecture based on the containerized microservices-oriented application pattern provided by [Microsoft](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/multi-container-microservice-net-applications/microservice-application-design).
+
+This application lets you keep track of tasks, type of tasks, users and monitor logs.
 
 ![Screenshot](screenshot.png)
 
-## Microserviços
+## Microservices
 
 - Gateway `dotnet-gateway-ocelot`
-- Tarefas `dotnet-todo-api`
-- Tipos de tarefa `dotnet-tipotarefa-api`
-- Usuários `dotnet-usuario-api`
+- Tasks `dotnet-todo-api`
+- Type of Tasks `dotnet-tipotarefa-api`
+- Users `dotnet-usuario-api`
 - SignalR `dotnet-todo-signalr`
 
-São instânciados também os containers do front-end, RabbitMQ e os banco de dados em MongoDB
+Front-end containers, RabbitMQ and MongoDB databases are also instanced.
 
-As APIs de tarefa, tipos de tarefa e usuários acessam seus respectivos banco de dados, também em containers (mongodb-1, mongodb-2, mongodb-3)
+Task, type of tasks and users APIs access their respective database, also containers (mongodb-1, mongodb-2, mongodb-3).
 
-O front-end comunica-se com as APIs unicamente através do Gateway e recebe notificações de log através do SignalR 
+The frontend communicates with the APIs solely through the Gateway and receives log notifications through SignalR.
 
-A comunicação entre os microserviços é feita através do Gateway e dos canais do RabbitMQ (consumer e producer)
+Communication between microservices is done through the Gateway and RabbitMQ channels (consumer and producer).
 
-## Como iniciar a aplicação
+## How to start
 
-- Tenha previamente instalado o Docker em seu compudar
-- Clone este repositório ```git clone https://github.com/paulotokarskiglinski/microservices-todo-app```
-- Dentro da pasta do projeto, execute o comando ```docker-compose up -d --build```
-- Acesse pelo seu navegador o endereço ```http://localhost:8080```
-
-***Observação:*** Caso um ou mais containers não inicie corretamente, execute o comando ```docker-compose up -d``` ou, através do Docker Desktop, inicie os containers manualmente
+- Have previously installed Docker on your computer
+- Clone this repository ```git clone https://github.com/paulotokarskiglinski/microservices-todo-app```
+- Inside the project folder, run the command ```docker-compose up -d --build```
+- In your browser, access ```http://localhost:8080```
+- It's up and running!
