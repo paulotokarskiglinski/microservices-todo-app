@@ -30,6 +30,6 @@ Communication between microservices is done through the Gateway and RabbitMQ cha
 
 - Have previously installed Docker on your computer
 - Clone this repository ```git clone https://github.com/paulotokarskiglinski/microservices-todo-app```
-- Inside the project folder, run the command ```docker-compose up -d --build```
+- Inside the project folder, run the command ```docker compose up -d --build```
 - In your browser, access ```http://localhost:8080```
 - It's up and running!
