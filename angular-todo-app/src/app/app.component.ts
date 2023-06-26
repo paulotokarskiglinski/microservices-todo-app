@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
 import { Log } from './models/Log';
 import { Tarefa } from './models/Tarefa';
 import { TipoTarefa } from './models/TipoTarefa';
@@ -17,16 +16,17 @@ import { UsuarioService } from './services/usuario.service';
 })
 export class AppComponent implements OnInit {
   
-  public logs: Log[] = [];
-  public tarefas!: Observable<Tarefa[]>;
-  public usuarios!: Observable<Usuario[]>;
-  public tipoTarefas!: Observable<TipoTarefa[]>;
-  public signalrStatus: boolean = false;
+  public logs = signal<Log[]>([]);
+  public tarefas = signal<Tarefa[]>([]);
+  public usuarios = signal<Usuario[]>([]);
+  public tipoTarefas = signal<TipoTarefa[]>([]);
+  public signalrStatus = signal<boolean>(false);
 
-  public selectUsuario!: Observable<Usuario[]>;
-  public selectTipoTarefa!: Observable<TipoTarefa[]>;
+  public selectUsuario = signal<Usuario[]>([]);
+  public selectTipoTarefa = signal<TipoTarefa[]>([]);
 
   public tarefaForm = this.formBuilder.group({
+    id: [''],
     descricao: ['', [Validators.required]],
     idtipotarefa: ['', [Validators.required]],
     idusuario: ['', [Validators.required]],
@@ -52,7 +52,7 @@ export class AppComponent implements OnInit {
     private tipoTarefaService: TipoTarefaService,
     private signalrService: SignalrService) {
       this.signalrService.eventEmitter.subscribe((log: Log) => {
-        this.logs.push(log);
+        this.logs.update((value: Log[]) => [...value, log]);
       });
     }
 
@@ -63,94 +63,77 @@ export class AppComponent implements OnInit {
 
     this.signalrService.startConnection().then((conectado: boolean) => {
       if (conectado) {
-        this.signalrStatus = conectado;
+        this.signalrStatus.set(conectado);
         this.signalrService.addTransferDataListener();
         this.signalrService.startHttpRequest();
       }
     });
   }
 
-  private getTarefas(): void {
-    this.tarefas = this.tarefaService.get();
+  private async getTarefas(): Promise<void> {
+    this.tarefas.set(await this.tarefaService.get() as Tarefa[]);
   }
 
-  private getTipoTarefas(): void {
-    this.tipoTarefas = this.tipoTarefaService.get();
-    this.selectTipoTarefa = this.tipoTarefas;
+  private async getTipoTarefas(): Promise<void> {
+    this.tipoTarefas.set(await this.tipoTarefaService.get() as TipoTarefa[]);
+    this.selectTipoTarefa.set(this.tipoTarefas());
   }
 
-  private getUsuarios(): void {
-    this.usuarios = this.usuarioService.get();
-    this.selectUsuario = this.usuarios;
+  private async getUsuarios(): Promise<void> {
+    this.usuarios.set(await this.usuarioService.get() as Usuario[]);
+    this.selectUsuario.set(this.usuarios());
   }
 
-  public cadastrarTarefa(): void {
+  public async cadastrarTarefa(): Promise<void> {
     if (this.tarefaForm.valid) {
       const item = this.tarefaForm.getRawValue();
-
-      this.tarefaService.post(item).subscribe((res: Tarefa) => {
-        if (res) {
-          this.getTarefas();
-        }
-      });
+      const res = await this.tarefaService.post(item as Tarefa);
+      if (res)
+        this.getTarefas();
     }
   }
 
-  public excluirTarefa(id: string): void {
-    this.tarefaService.delete(id).subscribe((res: any) => {
-      if (res) {
-        this.getTarefas();
-      }
-    });
+  public async excluirTarefa(id: string): Promise<void> {
+    const res = await this.tarefaService.delete(id);
+    if (res)
+      this.getTarefas();
   }
 
-  public mudarStatusTarefa(item: Tarefa): void {
+  public async mudarStatusTarefa(item: Tarefa): Promise<void> {
     item.feito = !item.feito;
 
-    this.tarefaService.put(item).subscribe((res: Tarefa) => {
-      if (res) {
-        this.getTarefas();
-      }
-    });
+    const res = await this.tarefaService.put(item);
+    if (res)
+      this.getTarefas();
   }
 
-  public cadastrarTipoTarefa(): void {
+  public async cadastrarTipoTarefa(): Promise<void> {
     if (this.tipoTarefaForm.valid) {
       const item = this.tipoTarefaForm.getRawValue();
-
-      this.tipoTarefaService.post(item).subscribe((res: TipoTarefa) => {
-        if (res) {
-          this.getTipoTarefas();
-        }
-      });
+      const res = await this.tipoTarefaService.post(item);
+      if (res)
+        this.getTipoTarefas();
     }
   }
 
-  public excluirTipoTarefa(id: string): void {
-    this.tipoTarefaService.delete(id).subscribe((res: any) => {
-      if (res) {
-        this.getTipoTarefas();
-      }
-    });
+  public async excluirTipoTarefa(id: string): Promise<void> {
+    const res = await this.tipoTarefaService.delete(id);
+    if (res)
+      this.getTipoTarefas();
   }
 
-  public cadastrarUsuario(): void {
+  public async cadastrarUsuario(): Promise<void> {
     if (this.usuarioForm.valid) {
       const item = this.usuarioForm.getRawValue();
-
-      this.usuarioService.post(item).subscribe((res: Usuario) => {
-        if (res) {
-          this.getUsuarios();
-        }
-      });
+      const res = await this.usuarioService.post(item);
+      if (res)
+        this.getUsuarios();
     }
   }
 
-  public excluirUsuario(id: string): void {
-    this.usuarioService.delete(id).subscribe((res: any) => {
-      if (res) {
-        this.getUsuarios();
-      }
-    });
+  public async excluirUsuario(id: string): Promise<void> {
+    const res = await this.usuarioService.delete(id);
+    if (res)
+      this.getUsuarios();
   }
 }

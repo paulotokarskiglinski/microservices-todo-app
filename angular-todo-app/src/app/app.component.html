@@ -30,7 +30,7 @@
         <div class="select">
           <select fxFlex name="idtipotarefa" formControlName="idtipotarefa">
             <option value="" disabled selected>Selecione o tipo da tarefa</option>
-            <option *ngFor="let item of selectTipoTarefa | async" [value]="item.id">
+            <option *ngFor="let item of selectTipoTarefa()" [value]="item.id">
               {{item.descricao}}
             </option>
           </select>
@@ -38,7 +38,7 @@
         <div class="select">
           <select fxFlex name="idusuario" formControlName="idusuario">
             <option value="" disabled selected>Selecione o usuário responsável</option>
-            <option *ngFor="let item of selectUsuario | async" [value]="item.id">
+            <option *ngFor="let item of selectUsuario()" [value]="item.id">
               {{item.nome + ' — ' + item.nomeUsuario}}
             </option>
           </select>
@@ -95,8 +95,8 @@
   <br><br>
 
   <div fxLayout="row" fxLayoutGap="20px">
-    <div fxFlex="25" class="content is-small">
-      <div *ngFor="let tarefa of tarefas | async; index as i" class="item">
+    <div fxFlex="25" class="content is-small" *ngIf="tarefas() as tarefas">
+      <div *ngFor="let tarefa of tarefas; index as i" class="item">
         <p>
           <span [ngClass]="'tag ' + (tarefa.feito ? 'is-success' : 'is-warning')">
             {{tarefa.feito ? 'Concluído' : 'Não concluído'}}
@@ -136,8 +136,8 @@
       </div>
     </div>
 
-    <div fxFlex="25" class="content is-small">
-      <div *ngFor="let tipoTarefa of tipoTarefas | async; index as i" class="item">
+    <div fxFlex="25" class="content is-small" *ngIf="tipoTarefas() as tipoTarefas">
+      <div *ngFor="let tipoTarefa of tipoTarefas; index as i" class="item">
         <p>
           <b>{{i + 1}} — {{tipoTarefa.descricao}}</b>
         </p>
@@ -154,8 +154,8 @@
       </div>
     </div>
 
-    <div fxFlex="25" class="content is-small">
-      <div *ngFor="let usuario of usuarios | async; index as i" class="item">
+    <div fxFlex="25" class="content is-small" *ngIf="usuarios() as usuarios">
+      <div *ngFor="let usuario of usuarios; index as i" class="item">
         <p>
           <b>{{i + 1}} — {{usuario.nome}}</b>
         </p>
@@ -178,7 +178,7 @@
       </div>
     </div>
 
-    <div fxFlex="25" class="content is-small">
+    <div fxFlex="25" class="content is-small" *ngIf="logs() as logs">
       <div *ngFor="let log of logs; index as i" class="item">
         <p>
           {{log?.data | date:'dd/MM/yyyy hh:MM:ss'}} >>> {{log?.metodo}} >>> {{log?.info}}

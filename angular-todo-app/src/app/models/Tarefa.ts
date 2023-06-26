@@ -5,7 +5,7 @@ export class Tarefa {
   public id!: string;
   public descricao!: string;
   public feito!: boolean;
-  public dataTarefa!: string;
+  public dataTarefa?: string;
   public tipoTarefa?: TipoTarefa;
   public usuario?: Usuario;
 }
