@@ -7,10 +7,35 @@ h1 {
 }
 
 .item p {
-  margin: 0;
+  margin: 0 !important;
   word-wrap: break-word;
 }
 
 .checkbox {
-  padding-left: 10px;
+  display: inline-flex;
+
+  .label {
+    top: -2px;
+    padding-left: 10px;
+    position: relative;
+    font-weight: normal;
+  }
+}
+
+input {
+  width: 100% !important;
+  margin-bottom: 5px !important;
+}
+
+select, .select {
+  width: 100% !important;
+  margin-bottom: 5px !important;
+}
+
+form {
+  button {
+    width: 100%;
+    margin-top: 10px;
+    font-weight: bold;
+  }
 }

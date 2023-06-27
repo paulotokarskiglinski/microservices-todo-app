@@ -1,5 +1,5 @@
-<div *ngIf="usuarios() as usuarios">
-  <div *ngFor="let usuario of usuarios; index as i" class="item">
+<ng-container *ngIf="usuarios().length > 0; else usuariosEmpty">
+  <div *ngFor="let usuario of usuarios(); index as i" class="item">
     <p>
       <b>{{i + 1}} — {{usuario.nome}}</b>
     </p>
@@ -20,4 +20,11 @@
     </button>
     <hr>
   </div>
-</div>
+</ng-container>
+
+<ng-template #usuariosEmpty>
+  <p>
+    <b>Nenhum usuário cadastrado no momento!</b>
+  </p>
+  <hr>
+</ng-template>
