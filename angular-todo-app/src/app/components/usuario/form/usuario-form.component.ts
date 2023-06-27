@@ -10,8 +10,7 @@ import { EventsEnum } from 'src/app/enums/Events';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, ReactiveFormsModule],
   selector: 'app-usuario-form',
-  templateUrl: './usuario-form.component.html',
-  styleUrls: ['./usuario-form.component.scss'],
+  templateUrl: './usuario-form.component.html'
 })
 export class UsuarioFormComponent {
 

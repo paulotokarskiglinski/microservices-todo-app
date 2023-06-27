@@ -11,8 +11,7 @@ import { EventsEnum } from 'src/app/enums/Events';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FlexLayoutModule],
   selector: 'app-usuario-list',
-  templateUrl: './usuario-list.component.html',
-  styleUrls: ['./usuario-list.component.scss']
+  templateUrl: './usuario-list.component.html'
 })
 export class UsuarioListComponent implements OnInit {
 

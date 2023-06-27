@@ -8,8 +8,7 @@ import { SignalrService } from 'src/app/services/signalr.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   selector: 'app-log-list',
-  templateUrl: './log-list.component.html',
-  styleUrls: ['./log-list.component.scss']
+  templateUrl: './log-list.component.html'
 })
 export class LogListComponent {
   

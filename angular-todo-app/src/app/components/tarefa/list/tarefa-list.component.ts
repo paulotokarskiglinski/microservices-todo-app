@@ -10,8 +10,7 @@ import { TarefaService } from 'src/app/services/tarefa.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   selector: 'app-tarefa-list',
-  templateUrl: './tarefa-list.component.html',
-  styleUrls: ['./tarefa-list.component.scss']
+  templateUrl: './tarefa-list.component.html'
 })
 export class TarefaListComponent implements OnInit {
 

@@ -9,8 +9,7 @@ import { TipoTarefaService } from 'src/app/services/tipo-tarefa.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule],
   selector: 'app-tipotarefa-form',
-  templateUrl: './tipotarefa-form.component.html',
-  styleUrls: ['./tipotarefa-form.component.scss']
+  templateUrl: './tipotarefa-form.component.html'
 })
 export class TipotarefaFormComponent {
 

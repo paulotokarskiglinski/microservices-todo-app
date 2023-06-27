@@ -15,8 +15,7 @@ import { UsuarioService } from 'src/app/services/usuario.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, ReactiveFormsModule],
   selector: 'app-tarefa-form',
-  templateUrl: './tarefa-form.component.html',
-  styleUrls: ['./tarefa-form.component.scss']
+  templateUrl: './tarefa-form.component.html'
 })
 export class TarefaFormComponent implements OnInit {
 

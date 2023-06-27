@@ -10,8 +10,7 @@ import { TipoTarefaService } from 'src/app/services/tipo-tarefa.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   selector: 'app-tipotarefa-list',
-  templateUrl: './tipotarefa-list.component.html',
-  styleUrls: ['./tipotarefa-list.component.scss']
+  templateUrl: './tipotarefa-list.component.html'
 })
 export class TipotarefaListComponent implements OnInit {
 
