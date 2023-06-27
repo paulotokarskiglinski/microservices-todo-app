@@ -16,6 +16,7 @@ import { LogListComponent } from './components/log/list/log-list.component';
 import { LogStatusComponent } from './components/log/status/log-status.component';
 import { TarefaFormComponent } from './components/tarefa/form/tarefa-form.component';
 import { TarefaListComponent } from './components/tarefa/list/tarefa-list.component';
+import { NavComponent } from './components/layout/nav/nav.component';
 
 @NgModule({
     declarations: [
@@ -40,7 +41,8 @@ import { TarefaListComponent } from './components/tarefa/list/tarefa-list.compon
       LogListComponent,
       LogStatusComponent,
       TarefaFormComponent,
-      TarefaListComponent
+      TarefaListComponent,
+      NavComponent
     ]
 })
 export class AppModule { }
