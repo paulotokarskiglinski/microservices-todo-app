@@ -1,0 +1,30 @@
+<h2 class="subtitle">Tarefas</h2>
+
+<form fxLayout="column" fxLayoutGap="5px" [formGroup]="tarefaForm" (ngSubmit)="cadastrar()">
+  <input fxFlex type="text" class="input" formControlName="descricao" placeholder="Descrição">
+  <div class="select">
+    <select fxFlex name="idtipotarefa" formControlName="idtipotarefa">
+      <option value="" disabled selected>Selecione o tipo da tarefa</option>
+      <option *ngFor="let item of selectTipoTarefas()" [value]="item.id">
+        {{item.descricao}}
+      </option>
+    </select>
+  </div>
+  <div class="select">
+    <select fxFlex name="idusuario" formControlName="idusuario">
+      <option value="" disabled selected>Selecione o usuário responsável</option>
+      <option *ngFor="let item of selectUsuarios()" [value]="item.id">
+        {{item.nome + ' — ' + item.nomeUsuario}}
+      </option>
+    </select>
+  </div>
+  <input type="date" class="input" formControlName="datatarefa" placeholder="Data da Tarefa">
+  <div fxFlex>
+    <input type="checkbox" formControlName="feito" id="feito">
+    <label class="checkbox" for="feito">Feito?</label>
+  </div>
+  
+  <br>
+
+  <button type="submit" class="button is-primary">Cadastrar</button>
+</form>

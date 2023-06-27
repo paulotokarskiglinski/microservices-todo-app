@@ -1,0 +1,12 @@
+<h2 class="subtitle">Usuários</h2>
+
+<form fxLayout="column" fxLayoutGap="5px" [formGroup]="usuarioForm" (ngSubmit)="cadastrarUsuario()">
+  <input fxFlex type="text" class="input" formControlName="nome" placeholder="Nome completo">
+  <input fxFlex type="text" class="input" formControlName="nomeUsuario" placeholder="Nome de usuário">
+  <input fxFlex type="password" class="input" formControlName="senha" placeholder="Senha">
+  <input fxFlex type="text" class="input" formControlName="email" placeholder="Email">
+  
+  <br>
+
+  <button type="submit" class="button is-primary">Cadastrar</button>
+</form>

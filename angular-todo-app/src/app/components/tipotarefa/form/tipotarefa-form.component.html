@@ -1,0 +1,9 @@
+<h2 class="subtitle">Tipos de Tarefas</h2>
+
+<form fxLayout="column" fxLayoutGap="5px" [formGroup]="tipoTarefaForm" (ngSubmit)="cadastrarTipoTarefa()">
+  <input fxFlex type="text" class="input" formControlName="descricao" placeholder="Descrição">
+
+  <br>
+
+  <button type="submit" class="button is-primary">Cadastrar</button>
+</form>

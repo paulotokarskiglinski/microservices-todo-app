@@ -1,0 +1,23 @@
+<div *ngIf="usuarios() as usuarios">
+  <div *ngFor="let usuario of usuarios; index as i" class="item">
+    <p>
+      <b>{{i + 1}} — {{usuario.nome}}</b>
+    </p>
+    <p>{{usuario.id}}</p>
+    <p>
+      <b>Usuário: </b>{{usuario.nomeUsuario}}
+    </p>
+    <p>
+      <b>Email: </b>{{usuario.email}}
+    </p>
+    <br>
+    <button type="button" class="button is-danger is-small is-light"
+      (click)="excluir(usuario.id)">
+      <span class="icon is-small">
+        <i class="fas fa-xmark"></i>
+      </span>
+      <span>Excluir</span>
+    </button>
+    <hr>
+  </div>
+</div>

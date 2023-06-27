@@ -1,0 +1,47 @@
+<ng-container *ngIf="tarefas().length > 0; else tarefasEmpty">
+  <div *ngFor="let tarefa of tarefas(); index as i" class="item">
+    <p>
+      <span [ngClass]="'tag ' + (tarefa.feito ? 'is-success' : 'is-warning')">
+        {{tarefa.feito ? 'Concluído' : 'Não concluído'}}
+      </span>
+      <span style="margin-left: 10px">
+        <b>{{i + 1}} — {{tarefa.descricao}}</b>
+      </span>
+    </p>
+    <p>{{tarefa.usuario?.nome}}</p>
+    <p>{{tarefa.tipoTarefa?.descricao}}</p>
+    <p>{{tarefa.dataTarefa | date:'dd/MM/yyyy'}}</p>
+    <br>
+    <div class="buttons">
+      <button type="button" class="button is-info is-small is-light"
+        (click)="mudarStatusTarefa(tarefa)" *ngIf="tarefa.feito">
+        <span class="icon is-small">
+          <i class="fas fa-arrow-rotate-left"></i>
+        </span>
+        <span>Desfazer</span>
+      </button>
+      <button type="button" class="button is-primary is-small is-light"
+        (click)="mudarStatusTarefa(tarefa)" *ngIf="!tarefa.feito">
+        <span class="icon is-small">
+          <i class="fas fa-check"></i>
+        </span>
+        <span>Concluir</span>
+      </button>
+      <button type="button" class="button is-danger is-small is-light"
+        (click)="excluir(tarefa.id)">
+        <span class="icon is-small">
+          <i class="fas fa-xmark"></i>
+        </span>
+        <span>Excluir</span>
+      </button>
+    </div>
+    <hr>
+  </div>
+</ng-container>
+
+<ng-template #tarefasEmpty>
+  <p>
+    <b>Nenhuma tarefa cadastrada no momento!</b>
+  </p>
+  <hr>
+</ng-template>
