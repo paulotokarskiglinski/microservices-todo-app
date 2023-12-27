@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as SignalR from '@microsoft/signalr';
 import { map, shareReplay } from 'rxjs';
@@ -13,6 +13,7 @@ export class SignalrService {
   public eventEmitter: EventEmitter<Log>;
   private hubConnection!: SignalR.HubConnection;
   private environment = environment;
+  private readonly http = inject(HttpClient);
 
   public addTransferDataListener = () => {
     this.hubConnection.on('LogMessage', (data: Log) => {
@@ -20,7 +21,7 @@ export class SignalrService {
     });
   }
 
-  constructor(private http: HttpClient) {
+  constructor() {
     this.eventEmitter = new EventEmitter<Log>();
   }
 

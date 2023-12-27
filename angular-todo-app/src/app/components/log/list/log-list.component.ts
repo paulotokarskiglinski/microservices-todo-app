@@ -18,7 +18,7 @@ export class LogListComponent {
 
   constructor() {
     this.signalrService.eventEmitter.subscribe((log: Log) => {
-      this.logs.update((value: Log[]) => [...value, log]);
+      this.logs.update((value: Log[]) => [log, ...value]);
     });
   }
 }

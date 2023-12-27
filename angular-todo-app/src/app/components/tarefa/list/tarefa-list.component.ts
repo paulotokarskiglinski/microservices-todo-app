@@ -14,6 +14,7 @@ import { TarefaService } from 'src/app/services/tarefa.service';
 })
 export class TarefaListComponent implements OnInit {
 
+  public loading = signal<boolean>(true);
   public tarefas = signal<Tarefa[]>([]);
   private readonly eventsEnum = EventsEnum;
   private readonly tarefaService = inject(TarefaService);
@@ -31,7 +32,9 @@ export class TarefaListComponent implements OnInit {
   }
 
   private async get(): Promise<void> {
+    this.loading.set(true);
     this.tarefas.set(await this.tarefaService.get() as Tarefa[]);
+    this.loading.set(false);
   }
 
   public async excluir(id: string): Promise<void> {

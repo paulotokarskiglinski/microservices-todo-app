@@ -14,10 +14,12 @@ import { TipoTarefaService } from 'src/app/services/tipo-tarefa.service';
 })
 export class TipotarefaListComponent implements OnInit {
 
+  public loading = signal<boolean>(true);
+  public tipoTarefas = signal<TipoTarefa[]>([]);
+
   private readonly eventsEnum = EventsEnum;
   private readonly tipoTarefaService = inject(TipoTarefaService);
   private readonly eventEmitterService = inject(EventEmitterService);
-  public tipoTarefas = signal<TipoTarefa[]>([]);
 
   constructor() {
     this.eventEmitterService.eventEmitter.subscribe((event: any) => {
@@ -31,7 +33,9 @@ export class TipotarefaListComponent implements OnInit {
   }
 
   private async get(): Promise<void> {
+    this.loading.set(true);
     this.tipoTarefas.set(await this.tipoTarefaService.get() as TipoTarefa[]);
+    this.loading.set(false);
   }
   
   public async excluir(id: string): Promise<void> {

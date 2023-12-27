@@ -15,6 +15,7 @@ import { EventsEnum } from 'src/app/enums/Events';
 })
 export class UsuarioListComponent implements OnInit {
 
+  public loading = signal<boolean>(true);
   public usuarios = signal<Usuario[]>([]);
 
   private readonly eventsEnum = EventsEnum;
@@ -33,7 +34,9 @@ export class UsuarioListComponent implements OnInit {
   }
 
   private async get(): Promise<void> {
+    this.loading.set(true);
     this.usuarios.set(await this.usuarioService.get() as Usuario[]);
+    this.loading.set(false);
   }
 
   public async excluir(id: string): Promise<void> {

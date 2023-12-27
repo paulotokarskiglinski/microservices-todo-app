@@ -1,15 +1,13 @@
-<ng-container *ngIf="logs().length > 0; else logEmpty">
-  <div *ngFor="let log of logs(); index as i" class="item">
+@for (log of logs(); track log) {
+  <div class="item">
     <p>
       {{log?.data | date:'dd/MM/yyyy hh:MM:ss'}} >>> {{log?.metodo}} >>> {{log?.info}}
     </p>
     <hr>
   </div>
-</ng-container>
-
-<ng-template #logEmpty>
+} @empty {
   <p>
     <b>Nenhum log no momento!</b>
   </p>
   <hr>
-</ng-template>
+}

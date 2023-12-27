@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { Tarefa } from '../models/Tarefa';
@@ -10,8 +10,7 @@ import { environment } from 'src/environments/environment';
 export class TarefaService {
 
   private environment = environment;
-
-  constructor(private http: HttpClient) { }
+  private readonly http = inject(HttpClient);
 
   public async get(): Promise<Tarefa[] | null> {
     try {

@@ -5,17 +5,25 @@
   <div class="select">
     <select fxFlex name="idtipotarefa" formControlName="idtipotarefa">
       <option value="" disabled selected>Selecione o tipo da tarefa</option>
-      <option *ngFor="let item of selectTipoTarefas()" [value]="item.id">
-        {{item.descricao}}
-      </option>
+      @for (item of selectTipoTarefas(); track item) {
+        <option [value]="item.id">
+          {{item.descricao}}
+        </option>
+      } @empty {
+        <option value="" disabled>Nenhum tipo de tarefa cadastrado!</option>
+      }
     </select>
   </div>
   <div class="select">
     <select fxFlex name="idusuario" formControlName="idusuario">
       <option value="" disabled selected>Selecione o usuário responsável</option>
-      <option *ngFor="let item of selectUsuarios()" [value]="item.id">
-        {{item.nome + ' — ' + item.nomeUsuario}}
-      </option>
+      @for (item of selectUsuarios(); track item) {
+        <option [value]="item.id">
+          {{item.nome + ' — ' + item.nomeUsuario}}
+        </option>
+      } @empty {
+        <option value="" disabled>Nenhum usuário cadastrado!</option>
+      }
     </select>
   </div>
   <input type="date" class="input" formControlName="datatarefa" placeholder="Data da Tarefa">

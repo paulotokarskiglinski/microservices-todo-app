@@ -1,6 +1,13 @@
 <h2 class="subtitle">Logs</h2>
 <div class="tags has-addons">
   <span class="tag is-light">Status</span>
-  <span class="tag is-success" *ngIf="signalrStatus()">Conectado</span>
-  <span class="tag is-danger" *ngIf="!signalrStatus()">Desconectado</span>
+  @defer {
+    @if (signalrStatus()) {
+      <span class="tag is-success">Conectado</span>
+    } @else {
+      <span class="tag is-danger">Desconectado</span>
+    }
+  } @placeholder {
+    <span class="tag">Conectando...</span>
+  }
 </div>

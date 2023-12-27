@@ -1,30 +1,32 @@
-<ng-container *ngIf="usuarios().length > 0; else usuariosEmpty">
-  <div *ngFor="let usuario of usuarios(); index as i" class="item">
+@defer (when !loading()) {
+  @for (usuario of usuarios(); let i = $index; track usuario) {
+    <div class="item">
+      <p>
+        <b>{{i + 1}} — {{usuario.nome}}</b>
+      </p>
+      <p>{{usuario.id}}</p>
+      <p>
+        <b>Usuário: </b>{{usuario.nomeUsuario}}
+      </p>
+      <p>
+        <b>Email: </b>{{usuario.email}}
+      </p>
+      <br>
+      <button type="button" class="button is-danger is-small is-light"
+        (click)="excluir(usuario.id)">
+        <span class="icon is-small">
+          <i class="fas fa-xmark"></i>
+        </span>
+        <span>Excluir</span>
+      </button>
+      <hr>
+    </div>
+  } @empty {
     <p>
-      <b>{{i + 1}} — {{usuario.nome}}</b>
+      <b>Nenhum usuário cadastrado no momento!</b>
     </p>
-    <p>{{usuario.id}}</p>
-    <p>
-      <b>Usuário: </b>{{usuario.nomeUsuario}}
-    </p>
-    <p>
-      <b>Email: </b>{{usuario.email}}
-    </p>
-    <br>
-    <button type="button" class="button is-danger is-small is-light"
-      (click)="excluir(usuario.id)">
-      <span class="icon is-small">
-        <i class="fas fa-xmark"></i>
-      </span>
-      <span>Excluir</span>
-    </button>
     <hr>
-  </div>
-</ng-container>
-
-<ng-template #usuariosEmpty>
-  <p>
-    <b>Nenhum usuário cadastrado no momento!</b>
-  </p>
-  <hr>
-</ng-template>
+  }
+} @placeholder {
+  <progress class="progress is-small is-primary" max="100"></progress>
+}

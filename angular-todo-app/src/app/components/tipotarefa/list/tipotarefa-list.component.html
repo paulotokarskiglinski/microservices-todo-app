@@ -1,17 +1,26 @@
-<ng-container *ngIf="tipoTarefas() as tipoTarefas">
-  <div *ngFor="let tipoTarefa of tipoTarefas; index as i" class="item">
+@defer (when !loading()) {
+  @for (tipoTarefa of tipoTarefas(); let i = $index; track tipoTarefa) {
+    <div class="item">
+      <p>
+        <b>{{i + 1}} — {{tipoTarefa.descricao}}</b>
+      </p>
+      <p>{{tipoTarefa.id}}</p>
+      <br>
+      <button type="button" class="button is-danger is-small is-light"
+        (click)="excluir(tipoTarefa.id)">
+        <span class="icon is-small">
+          <i class="fas fa-xmark"></i>
+        </span>
+        <span>Excluir</span>
+      </button>
+      <hr>
+    </div>
+  } @empty { 
     <p>
-      <b>{{i + 1}} — {{tipoTarefa.descricao}}</b>
+      <b>Nenhum tipo de tarefa cadastrada no momento!</b>
     </p>
-    <p>{{tipoTarefa.id}}</p>
-    <br>
-    <button type="button" class="button is-danger is-small is-light"
-      (click)="excluir(tipoTarefa.id)">
-      <span class="icon is-small">
-        <i class="fas fa-xmark"></i>
-      </span>
-      <span>Excluir</span>
-    </button>
     <hr>
-  </div>
-</ng-container>
+  }
+} @placeholder { 
+  <progress class="progress is-small is-primary" max="100"></progress>
+}
