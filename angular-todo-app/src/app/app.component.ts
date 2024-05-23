@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NavComponent } from './components/layout/nav/nav.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LogListComponent } from './components/log/list/log-list.component';
 import { LogStatusComponent } from './components/log/status/log-status.component';
@@ -21,7 +20,6 @@ import { UsuarioService } from './services/usuario.service';
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FlexLayoutModule,
     ReactiveFormsModule,
     UsuarioListComponent,
     UsuarioFormComponent,
