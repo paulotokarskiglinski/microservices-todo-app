@@ -1,5 +1,18 @@
 main {
   margin: 15px;
+
+  .row {
+    gap: 20px;
+    display: flex;
+    flex-direction: row;
+
+    .column {
+      gap: 20px;
+      display: flex;
+      overflow: hidden;
+      flex-direction: column;
+    }
+  }
 }
 
 h1 {
