@@ -1,38 +1,39 @@
 version: "3.9"
 services:
   mongodb-1:
-    image: mongo
+    image: mongo:7
     container_name: mongodb-1
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.runCommand({ ping: 1 })"]
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 })"]
       interval: 30s
       timeout: 30s
       retries: 3
   mongodb-2:
-    image: mongo
+    image: mongo:7
     container_name: mongodb-2
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.runCommand({ ping: 1 })"]
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 })"]
       interval: 30s
       timeout: 30s
       retries: 3
   mongodb-3:
-    image: mongo
+    image: mongo:7
     container_name: mongodb-3
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.runCommand({ ping: 1 })"]
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 })"]
       interval: 30s
       timeout: 30s
       retries: 3
   rabbitmq:
-    image: rabbitmq
+    image: rabbitmq:3.13
     hostname: rabbit-1
     container_name: rabbit-1
     healthcheck:
-      test: rabbitmq-diagnostics -q ping
-      interval: 30s
-      timeout: 30s
-      retries: 3
+      test: rabbitmq-diagnostics -q check_port_connectivity
+      interval: 5s
+      timeout: 10s
+      retries: 12
+      start_period: 20s
     ports:
       - 5672:5672
       - 15672:15672
@@ -45,6 +46,7 @@ services:
     build: ./dotnet-todo-signalr
     hostname: dotnet-todo-signalr
     container_name: dotnet-todo-signalr
+    restart: on-failure
     ports:
       - 7267:80
     depends_on:
@@ -54,6 +56,7 @@ services:
     build: ./dotnet-todo-api
     hostname: dotnet-todo-api
     container_name: dotnet-todo-api
+    restart: on-failure
     ports:
       - 7264:80
     depends_on:
@@ -63,6 +66,7 @@ services:
     build: ./dotnet-tipotarefa-api
     hostname: dotnet-tipotarefa-api
     container_name: dotnet-tipotarefa-api
+    restart: on-failure
     ports:
       - 7265:80
     depends_on:
@@ -72,6 +76,7 @@ services:
     build: ./dotnet-usuario-api
     hostname: dotnet-usuario-api
     container_name: dotnet-usuario-api
+    restart: on-failure
     ports:
       - 7266:80
     depends_on:
@@ -81,6 +86,7 @@ services:
     build: ./dotnet-gateway-ocelot
     hostname: dotnet-gateway-ocelot
     container_name: dotnet-gateway-ocelot
+    restart: on-failure
     ports:
       - 7081:80
     links:
