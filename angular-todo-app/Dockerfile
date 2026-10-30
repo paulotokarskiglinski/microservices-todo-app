@@ -1,16 +1,16 @@
-FROM node:latest as build
+FROM node:26-alpine AS build
 
 WORKDIR /usr/local/app
 
-COPY ./ /usr/local/app/
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
 
-RUN npm install
-
+COPY ./ ./
 RUN npm run build
 
-FROM nginx:latest
+FROM nginx:1.30-alpine
 
-COPY --from=build /usr/local/app/dist/angular-todo-app /usr/share/nginx/html
+COPY --from=build /usr/local/app/dist/angular-todo-app/browser /usr/share/nginx/html
 
 EXPOSE 80
 

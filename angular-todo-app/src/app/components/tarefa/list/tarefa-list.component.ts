@@ -1,24 +1,22 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { EventsEnum } from 'src/app/enums/Events';
 import { Tarefa } from 'src/app/models/Tarefa';
 import { EventEmitterService } from 'src/app/services/event-emitter.service';
 import { TarefaService } from 'src/app/services/tarefa.service';
 
 @Component({
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
   selector: 'app-tarefa-list',
-  templateUrl: './tarefa-list.component.html'
+  templateUrl: './tarefa-list.component.html',
+  imports: [DatePipe]
 })
 export class TarefaListComponent implements OnInit {
+  private readonly tarefaService = inject(TarefaService);
+  private readonly eventEmitterService = inject(EventEmitterService);
 
   public loading = signal<boolean>(true);
   public tarefas = signal<Tarefa[]>([]);
   private readonly eventsEnum = EventsEnum;
-  private readonly tarefaService = inject(TarefaService);
-  private readonly eventEmitterService = inject(EventEmitterService);
 
   constructor() {
     this.eventEmitterService.eventEmitter.subscribe((event: any) => {

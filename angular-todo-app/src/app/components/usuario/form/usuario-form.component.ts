@@ -1,19 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EventEmitterService } from 'src/app/services/event-emitter.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { EventsEnum } from 'src/app/enums/Events';
 
 @Component({
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ReactiveFormsModule],
   selector: 'app-usuario-form',
-  templateUrl: './usuario-form.component.html'
+  templateUrl: './usuario-form.component.html',
+  imports: [ReactiveFormsModule]
 })
 export class UsuarioFormComponent {
-
   private readonly eventEnum = EventsEnum;
   private readonly formBuilder = inject(FormBuilder);
   private readonly usuarioService = inject(UsuarioService);

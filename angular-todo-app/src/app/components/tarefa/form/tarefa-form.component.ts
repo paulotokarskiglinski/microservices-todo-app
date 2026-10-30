@@ -1,5 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EventsEnum } from 'src/app/enums/Events';
 import { Tarefa } from 'src/app/models/Tarefa';
@@ -11,14 +10,11 @@ import { TipoTarefaService } from 'src/app/services/tipo-tarefa.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 
 @Component({
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ReactiveFormsModule],
   selector: 'app-tarefa-form',
-  templateUrl: './tarefa-form.component.html'
+  templateUrl: './tarefa-form.component.html',
+  imports: [ReactiveFormsModule]
 })
 export class TarefaFormComponent implements OnInit {
-
   private readonly eventsEnum = EventsEnum;
   private readonly formBuilder = inject(FormBuilder);
   private readonly tarefaService = inject(TarefaService);

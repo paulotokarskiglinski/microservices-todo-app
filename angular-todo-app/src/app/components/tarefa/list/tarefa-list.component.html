@@ -2,7 +2,7 @@
   @for (tarefa of tarefas(); let i = $index; track tarefa) {
     <div class="item">
       <p>
-        <span [ngClass]="'tag ' + (tarefa.feito ? 'is-success' : 'is-warning')">
+        <span class="tag" [class.is-success]="tarefa.feito" [class.is-warning]="!tarefa.feito">
           {{tarefa.feito ? 'Concluído' : 'Não concluído'}}
         </span>
         <span style="margin-left: 10px">

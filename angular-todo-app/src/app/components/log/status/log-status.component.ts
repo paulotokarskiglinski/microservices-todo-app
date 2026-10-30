@@ -1,16 +1,11 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { SignalrService } from 'src/app/services/signalr.service';
 
 @Component({
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
   selector: 'app-log-status',
   templateUrl: './log-status.component.html'
 })
 export class LogStatusComponent {
-
   private readonly signalrService = inject(SignalrService);
 
   public signalrStatus = signal<boolean>(false);

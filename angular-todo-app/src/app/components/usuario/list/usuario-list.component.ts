@@ -1,25 +1,20 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { Usuario } from 'src/app/models/Usuario';
 import { EventEmitterService } from 'src/app/services/event-emitter.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { EventsEnum } from 'src/app/enums/Events';
 
 @Component({
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
   selector: 'app-usuario-list',
   templateUrl: './usuario-list.component.html'
 })
 export class UsuarioListComponent implements OnInit {
-
-  public loading = signal<boolean>(true);
-  public usuarios = signal<Usuario[]>([]);
-
   private readonly eventsEnum = EventsEnum;
   private readonly usuarioService = inject(UsuarioService);
   private readonly eventEmitterService = inject(EventEmitterService);
+
+  public loading = signal<boolean>(true);
+  public usuarios = signal<Usuario[]>([]);
 
   constructor() {
     this.eventEmitterService.eventEmitter.subscribe((event: any) => {

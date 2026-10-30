@@ -1,25 +1,20 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { EventsEnum } from 'src/app/enums/Events';
 import { TipoTarefa } from 'src/app/models/TipoTarefa';
 import { EventEmitterService } from 'src/app/services/event-emitter.service';
 import { TipoTarefaService } from 'src/app/services/tipo-tarefa.service';
 
 @Component({
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
   selector: 'app-tipotarefa-list',
   templateUrl: './tipotarefa-list.component.html'
 })
 export class TipotarefaListComponent implements OnInit {
-
-  public loading = signal<boolean>(true);
-  public tipoTarefas = signal<TipoTarefa[]>([]);
-
   private readonly eventsEnum = EventsEnum;
   private readonly tipoTarefaService = inject(TipoTarefaService);
   private readonly eventEmitterService = inject(EventEmitterService);
+  
+  public loading = signal<boolean>(true);
+  public tipoTarefas = signal<TipoTarefa[]>([]);
 
   constructor() {
     this.eventEmitterService.eventEmitter.subscribe((event: any) => {

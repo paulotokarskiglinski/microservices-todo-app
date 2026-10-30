@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavComponent } from './components/layout/nav/nav.component';
-import { ReactiveFormsModule } from '@angular/forms';
 import { LogListComponent } from './components/log/list/log-list.component';
 import { LogStatusComponent } from './components/log/status/log-status.component';
 import { TarefaFormComponent } from './components/tarefa/form/tarefa-form.component';
@@ -15,12 +14,9 @@ import { TipoTarefaService } from './services/tipo-tarefa.service';
 import { UsuarioService } from './services/usuario.service';
 
 @Component({
-  standalone: true,
   selector: 'app-root',
   templateUrl: './app.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    ReactiveFormsModule,
     UsuarioListComponent,
     UsuarioFormComponent,
     TipotarefaListComponent,
@@ -36,6 +32,6 @@ import { UsuarioService } from './services/usuario.service';
     UsuarioService,
     TipoTarefaService,
     SignalrService
-  ],
+  ]
 })
 export class AppComponent { }
