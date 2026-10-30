@@ -6,7 +6,7 @@ namespace dotnet_todo_signalr.Services
 {
     public class UsuarioLogService : IUsuarioLogService
     {
-        public void PostAsync(BasicDeliverEventArgs e, LogService logService)
+        public async Task PostAsync(BasicDeliverEventArgs e, LogService logService)
         {
             var body = e.Body.ToArray();
             var message = JsonSerializer.Deserialize<Usuario>(body);
@@ -21,10 +21,10 @@ namespace dotnet_todo_signalr.Services
             };
 
             if (log != null)
-                _ = logService.CreateAsync(log);
+                await logService.CreateAsync(log);
         }
 
-        public void PutAsync(BasicDeliverEventArgs e, LogService logService)
+        public async Task PutAsync(BasicDeliverEventArgs e, LogService logService)
         {
             var body = e.Body.ToArray();
             var message = JsonSerializer.Deserialize<Usuario>(body);
@@ -38,11 +38,11 @@ namespace dotnet_todo_signalr.Services
                 };
 
                 if (log != null)
-                    _ = logService.CreateAsync(log);
+                    await logService.CreateAsync(log);
             }
         }
 
-        public void DeleteAsync(BasicDeliverEventArgs e, LogService logService)
+        public async Task DeleteAsync(BasicDeliverEventArgs e, LogService logService)
         {
             var body = e.Body.ToArray();
             var message = JsonSerializer.Deserialize<string>(body);
@@ -57,7 +57,7 @@ namespace dotnet_todo_signalr.Services
             };
 
             if (log != null)
-                _ = logService.CreateAsync(log);
+                await logService.CreateAsync(log);
         }
     }
 }

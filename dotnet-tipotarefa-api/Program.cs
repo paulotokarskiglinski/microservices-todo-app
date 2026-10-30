@@ -1,9 +1,8 @@
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using dotnet_tipotarefa_api.Models;
 using dotnet_tipotarefa_api.Services;
 using RabbitMQ.Client;
 using System.Text.Json;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +18,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = ".NET TODO API",
-        Description = "API de Tipo de Tarefa desenvolvido em .NET 6 com minimal API e MongoDB",
+        Description = "API de Tipo de Tarefa desenvolvido em .NET 10 com minimal API e MongoDB",
         Version = "v1"
     });
 });
@@ -32,12 +31,25 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", ".NET Tipo de Tarefa API v1");
 });
 
+#region RabbitMQ Producer
 ConnectionFactory factory = new ConnectionFactory()
 {
-    Uri = new Uri(app.Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>().ConnectionString)
+    Uri = new Uri(app.Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>()!.ConnectionString)
 };
-IConnection connection = factory.CreateConnection();
-IModel channel = connection.CreateModel();
+IConnection connection = await factory.CreateConnectionAsync();
+IChannel channel = await connection.CreateChannelAsync();
+
+foreach (var queue in new[] { "post_tipotarefa", "put_tipotarefa", "delete_tipotarefa" })
+{
+    await channel.QueueDeclareAsync(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
+}
+
+async Task Publish<T>(string queue, T message)
+{
+    var body = JsonSerializer.SerializeToUtf8Bytes(message);
+    await channel.BasicPublishAsync(exchange: "", routingKey: queue, body: body);
+}
+#endregion
 
 app.MapGet("/tipotarefa", async (ITipoTarefaService service) => await service.GetAsync());
 
@@ -55,20 +67,7 @@ app.MapPost("/tipotarefa", async (ITipoTarefaService service, TipoTarefa item) =
 {
     await service.CreateAsync(item);
 
-    #region RabbitMQ Producer
-    channel.QueueDeclare(queue: "post_tipotarefa",
-                         durable: false,
-                         exclusive: false,
-                         autoDelete: false,
-                         arguments: null);
-
-    var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(item));
-
-    channel.BasicPublish(exchange: "",
-                         routingKey: "post_tipotarefa",
-                         basicProperties: null,
-                         body: body);
-    #endregion
+    await Publish("post_tipotarefa", item);
 
     return Results.Created($"/tipotarefa/{item.Id}", item);
 });
@@ -82,20 +81,7 @@ app.MapPut("/tipotarefa", async (ITipoTarefaService service, TipoTarefa item) =>
 
     await service.UpdateAsync(item.Id, result);
 
-    #region RabbitMQ Producer
-    channel.QueueDeclare(queue: "put_tipotarefa",
-                         durable: false,
-                         exclusive: false,
-                         autoDelete: false,
-                         arguments: null);
-
-    var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(item));
-
-    channel.BasicPublish(exchange: "",
-                         routingKey: "put_tipotarefa",
-                         basicProperties: null,
-                         body: body);
-    #endregion
+    await Publish("put_tipotarefa", item);
 
     return Results.Created($"/tipotarefa/{item.Id}", result);
 });
@@ -109,20 +95,7 @@ app.MapDelete("/tipotarefa/{id}", async (ITipoTarefaService service, string id) 
 
     await service.RemoveAsync(id);
 
-    #region RabbitMQ Producer
-    channel.QueueDeclare(queue: "delete_tipotarefa",
-                         durable: false,
-                         exclusive: false,
-                         autoDelete: false,
-                         arguments: null);
-
-    var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(id));
-
-    channel.BasicPublish(exchange: "",
-                         routingKey: "delete_tipotarefa",
-                         basicProperties: null,
-                         body: body);
-    #endregion
+    await Publish("delete_tipotarefa", id);
 
     return Results.Ok(id);
 });

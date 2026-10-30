@@ -16,14 +16,14 @@ namespace dotnet_todo_api.Services
 
         public async Task<List<Usuario>?> GetAsync()
         {
-            HttpResponseMessage response = await client.GetAsync("http://dotnet-gateway-ocelot:80/api/usuario");
-            return JsonSerializer.Deserialize<List<Usuario>>(response.Content.ReadAsStringAsync().Result, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            HttpResponseMessage response = await client.GetAsync("http://dotnet-gateway-ocelot:8080/api/usuario");
+            return JsonSerializer.Deserialize<List<Usuario>>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
         public async Task<Usuario?> GetAsync(string id)
         {
-            HttpResponseMessage response = await client.GetAsync("http://dotnet-gateway-ocelot:80/api/usuario/" + id);
-            return JsonSerializer.Deserialize<Usuario>(response.Content.ReadAsStringAsync().Result, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            HttpResponseMessage response = await client.GetAsync("http://dotnet-gateway-ocelot:8080/api/usuario/" + id);
+            return JsonSerializer.Deserialize<Usuario>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
     }
 }

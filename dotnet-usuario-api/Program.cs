@@ -1,9 +1,8 @@
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using dotnet_usuario_api.Models;
 using dotnet_usuario_api.Services;
 using RabbitMQ.Client;
 using System.Text.Json;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +18,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = ".NET TODO API",
-        Description = "API de Usuário desenvolvido em .NET 6 com minimal API e MongoDB",
+        Description = "API de Usuário desenvolvido em .NET 10 com minimal API e MongoDB",
         Version = "v1"
     });
 });
@@ -32,12 +31,25 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", ".NET Usuário API v1");
 });
 
+#region RabbitMQ Producer
 ConnectionFactory factory = new ConnectionFactory()
 {
-    Uri = new Uri(app.Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>().ConnectionString)
+    Uri = new Uri(app.Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>()!.ConnectionString)
 };
-IConnection connection = factory.CreateConnection();
-IModel channel = connection.CreateModel();
+IConnection connection = await factory.CreateConnectionAsync();
+IChannel channel = await connection.CreateChannelAsync();
+
+foreach (var queue in new[] { "post_usuario", "put_usuario", "delete_usuario" })
+{
+    await channel.QueueDeclareAsync(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
+}
+
+async Task Publish<T>(string queue, T message)
+{
+    var body = JsonSerializer.SerializeToUtf8Bytes(message);
+    await channel.BasicPublishAsync(exchange: "", routingKey: queue, body: body);
+}
+#endregion
 
 app.MapGet("/usuario", async (IUsuarioService service) => await service.GetAsync());
 
@@ -55,20 +67,7 @@ app.MapPost("/usuario", async (IUsuarioService service, Usuario item) =>
 {
     await service.CreateAsync(item);
 
-    #region RabbitMQ Producer
-    channel.QueueDeclare(queue: "post_usuario",
-                         durable: false,
-                         exclusive: false,
-                         autoDelete: false,
-                         arguments: null);
-
-    var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(item));
-
-    channel.BasicPublish(exchange: "",
-                         routingKey: "post_usuario",
-                         basicProperties: null,
-                         body: body);
-    #endregion
+    await Publish("post_usuario", item);
 
     return Results.Created($"/usuario/{item.Id}", item);
 });
@@ -82,20 +81,7 @@ app.MapPut("/usuario", async (IUsuarioService service, Usuario item) =>
 
     await service.UpdateAsync(item.Id, result);
 
-    #region RabbitMQ Producer
-    channel.QueueDeclare(queue: "put_usuario",
-                         durable: false,
-                         exclusive: false,
-                         autoDelete: false,
-                         arguments: null);
-
-    var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(item));
-
-    channel.BasicPublish(exchange: "",
-                         routingKey: "put_usuario",
-                         basicProperties: null,
-                         body: body);
-    #endregion
+    await Publish("put_usuario", item);
 
     return Results.Created($"/usuario/{item.Id}", result);
 });
@@ -109,20 +95,7 @@ app.MapDelete("/usuario/{id}", async (IUsuarioService service, string id) =>
 
     await service.RemoveAsync(id);
 
-    #region RabbitMQ Producer
-    channel.QueueDeclare(queue: "delete_usuario",
-                         durable: false,
-                         exclusive: false,
-                         autoDelete: false,
-                         arguments: null);
-
-    var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(id));
-
-    channel.BasicPublish(exchange: "",
-                         routingKey: "delete_usuario",
-                         basicProperties: null,
-                         body: body);
-    #endregion
+    await Publish("delete_usuario", id);
 
     return Results.Ok(id);
 });

@@ -16,14 +16,14 @@ namespace dotnet_todo_api.Services
 
         public async Task<List<TipoTarefa>?> GetAsync()
         {
-            HttpResponseMessage response = await client.GetAsync("http://dotnet-gateway-ocelot:80/api/tipotarefa");
-            return JsonSerializer.Deserialize<List<TipoTarefa>>(response.Content.ReadAsStringAsync().Result, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            HttpResponseMessage response = await client.GetAsync("http://dotnet-gateway-ocelot:8080/api/tipotarefa");
+            return JsonSerializer.Deserialize<List<TipoTarefa>>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
         public async Task<TipoTarefa?> GetAsync(string id)
         {
-            HttpResponseMessage response = await client.GetAsync("http://dotnet-gateway-ocelot:80/api/tipotarefa/" + id);
-            return JsonSerializer.Deserialize<TipoTarefa>(response.Content.ReadAsStringAsync().Result, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            HttpResponseMessage response = await client.GetAsync("http://dotnet-gateway-ocelot:8080/api/tipotarefa/" + id);
+            return JsonSerializer.Deserialize<TipoTarefa>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
     }
 }

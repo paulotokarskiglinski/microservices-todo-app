@@ -22,7 +22,7 @@ var app = builder.Build();
 
 app.UseCors("CorsPolicy");
 
-app.UseOcelot().Wait();
+await app.UseOcelot();
 
 app.MapGet("/", () => "API Gateway");
 
