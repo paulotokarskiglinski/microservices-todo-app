@@ -1,33 +1,31 @@
-version: "3.9"
+x-mongo: &mongo
+  # Pinned: the floating "9.0" tag currently ships a broken amd64 image
+  image: mongo:9.0.2-noble
+  healthcheck:
+    test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 })"]
+    interval: 10s
+    timeout: 10s
+    retries: 6
+    start_period: 20s
+
 services:
   mongodb-1:
-    image: mongo:7
+    <<: *mongo
     container_name: mongodb-1
-    healthcheck:
-      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 })"]
-      interval: 30s
-      timeout: 30s
-      retries: 3
   mongodb-2:
-    image: mongo:7
+    <<: *mongo
     container_name: mongodb-2
-    healthcheck:
-      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 })"]
-      interval: 30s
-      timeout: 30s
-      retries: 3
   mongodb-3:
-    image: mongo:7
+    <<: *mongo
     container_name: mongodb-3
-    healthcheck:
-      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 })"]
-      interval: 30s
-      timeout: 30s
-      retries: 3
   rabbitmq:
-    image: rabbitmq:3.13
+    image: rabbitmq:4.3-management
     hostname: rabbit-1
     container_name: rabbit-1
+    environment:
+      # Must match the amqp:// connection strings in each service's appsettings.json
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
     healthcheck:
       test: rabbitmq-diagnostics -q check_port_connectivity
       interval: 5s
@@ -48,7 +46,7 @@ services:
     container_name: dotnet-todo-signalr
     restart: on-failure
     ports:
-      - 7267:80
+      - 7267:8080
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -58,9 +56,11 @@ services:
     container_name: dotnet-todo-api
     restart: on-failure
     ports:
-      - 7264:80
+      - 7264:8080
     depends_on:
       rabbitmq:
+        condition: service_healthy
+      mongodb-1:
         condition: service_healthy
   dotnet-tipotarefa-api:
     build: ./dotnet-tipotarefa-api
@@ -68,9 +68,11 @@ services:
     container_name: dotnet-tipotarefa-api
     restart: on-failure
     ports:
-      - 7265:80
+      - 7265:8080
     depends_on:
       rabbitmq:
+        condition: service_healthy
+      mongodb-2:
         condition: service_healthy
   dotnet-usuario-api:
     build: ./dotnet-usuario-api
@@ -78,9 +80,11 @@ services:
     container_name: dotnet-usuario-api
     restart: on-failure
     ports:
-      - 7266:80
+      - 7266:8080
     depends_on:
       rabbitmq:
+        condition: service_healthy
+      mongodb-3:
         condition: service_healthy
   dotnet-gateway-ocelot:
     build: ./dotnet-gateway-ocelot
@@ -88,11 +92,7 @@ services:
     container_name: dotnet-gateway-ocelot
     restart: on-failure
     ports:
-      - 7081:80
-    links:
-      - dotnet-todo-api
-      - dotnet-usuario-api
-      - dotnet-tipotarefa-api
+      - 7081:8080
     depends_on:
       - dotnet-todo-api
       - dotnet-usuario-api
